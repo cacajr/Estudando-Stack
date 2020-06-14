@@ -87,7 +87,7 @@ app.put('/users/:index', checkUserInArray, checkUsersExists, (req, res) => {
 app.delete('/users/:index', checkUserInArray, (req, res) => {
     // resgato o index do usuario que esta no params da requisicao
     const { index } = req.params;
-    // deleto no, no array (banco de dados), o elemento com o indice informado
+    // deleto no array (banco de dados), o elemento com o indice informado
     users.splice(index, 1);
     // retorno a resposta com o array de users completo
     return res.json(users);
