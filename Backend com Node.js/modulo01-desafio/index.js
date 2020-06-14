@@ -31,7 +31,7 @@ app.get('/projects/:id', (req, res) => {
     const { id } = req.params;
     
     return res.json(arrayProjects[id-1]);
-})
+});
 
 // EDITA O TITULO DE UM PROJETO ESPECIFICO
 app.put('/projects/:id', (req, res) => {
@@ -41,7 +41,7 @@ app.put('/projects/:id', (req, res) => {
     arrayProjects[id-1].title = title;
 
     return res.json(arrayProjects);
-})
+});
 
 // DELETA UM PROJETO ESPECIFICO
 app.delete('/projects/:id', (req, res) => {
@@ -50,6 +50,16 @@ app.delete('/projects/:id', (req, res) => {
     arrayProjects.splice(id-1, 1);
 
     return res.json(arrayProjects);
-})
+});
+
+// ADICIONA UMA TAREFA EM UM PROJETO ESPECIFICO
+app.post('/projects/:id/tasks', (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
+
+    arrayProjects[id-1].tasks.push(title);
+
+    return res.json(arrayProjects);
+});
 
 app.listen(3333);
