@@ -6,6 +6,24 @@ app.use(express.json());
 arrayProjects = [{ id: "1", title: 'Primeiro Projeto', tasks: ['Nova tarefa'] },
                  { id: "2", title: 'Segundo Projeto', tasks: ['Nova tarefa'] }];
 
+contReq = 0;
+
+//CRIANDO MIDDLEWARES
+// MIDDLEWARE GLOBAL QUE CALCULA QUANTAS REQUISICOES FORAM FEITAS ATE ENTAO
+app.use((req, res, next) => {
+    contReq += 1
+    console.log(`Número de requisições até então: ${contReq}`)
+    next();
+});
+
+// MIDDLEWARE QUE TRATA O ID DA REQUISICAO
+function checkIdProjectExists(req, res, next){
+    if(!(req.params.id > 0 && req.params.id <= arrayProjects.length)){
+        return res.status(400).json({ error: 'Project ID does not exist!' });
+    }
+    return next();
+}
+
 // CRIANDO UM PROJETO
 app.post('/projects', (req, res) => {
     const { id, title } = req.body;
@@ -27,14 +45,14 @@ app.get('/projects', (req, res) => {
 });
 
 // LISTA UM PROJETO ESPECIFICO
-app.get('/projects/:id', (req, res) => {
+app.get('/projects/:id', checkIdProjectExists, (req, res) => {
     const { id } = req.params;
     
     return res.json(arrayProjects[id-1]);
 });
 
 // EDITA O TITULO DE UM PROJETO ESPECIFICO
-app.put('/projects/:id', (req, res) => {
+app.put('/projects/:id', checkIdProjectExists, (req, res) => {
     const { id } = req.params;
     const { title } = req.body;
 
@@ -44,7 +62,7 @@ app.put('/projects/:id', (req, res) => {
 });
 
 // DELETA UM PROJETO ESPECIFICO
-app.delete('/projects/:id', (req, res) => {
+app.delete('/projects/:id', checkIdProjectExists, (req, res) => {
     const { id } = req.params;
 
     arrayProjects.splice(id-1, 1);
@@ -53,7 +71,7 @@ app.delete('/projects/:id', (req, res) => {
 });
 
 // ADICIONA UMA TAREFA EM UM PROJETO ESPECIFICO
-app.post('/projects/:id/tasks', (req, res) => {
+app.post('/projects/:id/tasks', checkIdProjectExists, (req, res) => {
     const { id } = req.params;
     const { title } = req.body;
 
