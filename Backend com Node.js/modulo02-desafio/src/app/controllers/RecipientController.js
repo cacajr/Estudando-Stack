@@ -4,13 +4,13 @@ class RecipientController {
     async store(req, res) {
         const recipientExists = await Recipient.findOne({ where: { name: req.body.name } });
 
-        if (userExists) {
+        if (recipientExists) {
             return res.status(400).json({ error: 'Recipient already exists.' });
         }
 
-        const { id, name } = await User.create(req.body);
+        const recipient = await Recipient.create(req.body);
 
-        return res.json({ id, name});
+        return res.json(recipient);
     }
 }
 
